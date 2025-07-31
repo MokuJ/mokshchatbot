@@ -6,7 +6,6 @@ async function sendMessage() {
   const userText = input.value.trim();
   if (!userText) return;
 
-  // Append user message
   chat.innerHTML += `<div class="msg"><strong>You:</strong> ${userText}</div>`;
   input.value = "";
   chat.scrollTop = chat.scrollHeight;
@@ -25,8 +24,14 @@ async function sendMessage() {
     });
 
     const data = await response.json();
-    const reply = data.choices?.[0]?.message?.content || "[No response]";
-    chat.innerHTML += `<div class="msg"><strong>Bot:</strong> ${reply}</div>`;
+
+    if (!response.ok) {
+      chat.innerHTML += `<div class="msg"><strong>Bot:</strong> Error: ${data.error.message}</div>`;
+    } else {
+      const reply = data.choices?.[0]?.message?.content || "[No response]";
+      chat.innerHTML += `<div class="msg"><strong>Bot:</strong> ${reply}</div>`;
+    }
+
     chat.scrollTop = chat.scrollHeight;
   } catch (err) {
     chat.innerHTML += `<div class="msg"><strong>Bot:</strong> Error: ${err.message}</div>`;
