@@ -10,9 +10,12 @@
       color: #eee;
       font-family: 'Courier New', monospace;
       padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
     }
     #chat {
-      height: 70vh;
+      flex: 1;
       overflow-y: auto;
       border: 1px solid #444;
       padding: 1rem;
@@ -22,18 +25,38 @@
     .msg {
       margin: 0.5rem 0;
     }
-    input, button {
+    #inputContainer {
+      display: flex;
+      gap: 0.5rem;
+    }
+    input {
+      flex: 1;
       padding: 0.5rem;
       font-size: 1rem;
+      background: #333;
+      color: #eee;
+      border: 1px solid #555;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      background: #444;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #555;
     }
   </style>
 </head>
 <body>
   <h1>Moksh Chatbot</h1>
   <div id="chat"></div>
-  <input type="text" id="userInput" placeholder="Type something..." />
-  <button onclick="sendMessage()">Send</button>
-
+  <div id="inputContainer">
+    <input type="text" id="userInput" placeholder="Type something..." onkeypress="if(event.key==='Enter') sendMessage()"/>
+    <button onclick="sendMessage()">Send</button>
+  </div>
   <script src="chat.js"></script>
 </body>
 </html>
