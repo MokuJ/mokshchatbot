@@ -1,73 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Moksh Chatbot</title>
   <style>
-    body {
-      background-color: #121212;
-      color: #f5f5f5;
-      font-family: "Georgia", serif;
-      padding: 20px;
-    }
-    #chatbox {
-      border: 1px solid #333;
-      padding: 10px;
-      height: 300px;
-      overflow-y: auto;
-      margin-bottom: 10px;
-      background-color: #1e1e1e;
-    }
-    input, button {
-      padding: 10px;
-      font-size: 1em;
-      margin-top: 5px;
-    }
-    #status {
-      color: #888;
-      font-size: 0.9em;
-    }
+    body { background-color: #1a1a1a; color: #f5f5f5; font-family: serif; padding: 2rem; }
+    #chatbox { width: 100%; height: 300px; overflow-y: scroll; border: 1px solid #555; padding: 1rem; margin-bottom: 1rem; }
+    input, button { font-size: 1rem; padding: 0.5rem; }
   </style>
 </head>
 <body>
-  <h1>Moksh Chatbot</h1>
+  <h1>📚 Moksh's Literary Chatbot</h1>
   <div id="chatbox"></div>
-  <input type="text" id="userInput" placeholder="Type your message here..." />
-  <button onclick="sendMessage()">Send</button>
-  <p id="status">Ready.</p>
+  <input id="userInput" placeholder="Type something...">
+  <button onclick="send()">Send</button>
 
   <script>
-    async function sendMessage() {
-      const input = document.getElementById("userInput");
-      const chatbox = document.getElementById("chatbox");
-      const status = document.getElementById("status");
-
-      const userText = input.value.trim();
-      if (!userText) return;
-
-      chatbox.innerHTML += `<p><strong>You:</strong> ${userText}</p>`;
-      input.value = "";
-      status.innerText = "Typing...";
-
-      try {
-        const response = await fetch("/api/chat", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ message: userText }),
-        });
-
-        const data = await response.json();
-        chatbox.innerHTML += `<p><strong>Bot:</strong> ${data.reply}</p>`;
-        status.innerText = "Ready.";
-      } catch (error) {
-        chatbox.innerHTML += `<p><strong>Bot:</strong> Error. Try again.</p>`;
-        status.innerText = "Error.";
-      }
-
-      chatbox.scrollTop = chatbox.scrollHeight;
+    async function send() {
+      const input = document.getElementById('userInput').value;
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: input })
+      });
+      const data = await res.json();
+      const chatbox = document.getElementById('chatbox');
+      chatbox.innerHTML += `<p><b>You:</b> ${input}</p><p><b>Bot:</b> ${data.reply}</p>`;
+      document.getElementById('userInput').value = '';
     }
   </script>
 </body>
