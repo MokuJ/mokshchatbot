@@ -1,55 +1,29 @@
-const apiKey = "sk-your-api-key-here"; // Replace this with your real OpenAI key
+function sendMessage() {
+  const input = document.getElementById("userInput");
+  const chat = document.getElementById("chat");
+  const userText = input.value.trim();
 
-const chatBox = document.getElementById("chat-box");
-const userInput = document.getElementById("user-input");
-const sendBtn = document.getElementById("send-btn");
+  if (!userText) return;
 
-async function sendMessage() {
-  const message = userInput.value.trim();
-  if (!message) return;
+  // Add user message
+  const userMsg = document.createElement("div");
+  userMsg.className = "msg";
+  userMsg.textContent = "You: " + userText;
+  chat.appendChild(userMsg);
 
-  appendMessage("You", message);
-  userInput.value = "";
-  appendMessage("Bot", "Typing...");
+  // Fake bot reply
+  const botMsg = document.createElement("div");
+  botMsg.className = "msg";
+  botMsg.textContent = "MokshBot: " + getBotReply(userText);
+  chat.appendChild(botMsg);
 
-  try {
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: "gpt-3.5-turbo",
-        messages: [{ role: "user", content: message }],
-      }),
-    });
-
-    const data = await response.json();
-    const reply = data.choices?.[0]?.message?.content?.trim() || "Error: Empty response.";
-    updateLastBotMessage(reply);
-  } catch (error) {
-    updateLastBotMessage("Error: Could not reach OpenAI.");
-  }
+  chat.scrollTop = chat.scrollHeight;
+  input.value = "";
 }
 
-function appendMessage(sender, text) {
-  const msgDiv = document.createElement("div");
-  msgDiv.className = "message";
-  msgDiv.innerHTML = `<strong>${sender}:</strong> ${text}`;
-  chatBox.appendChild(msgDiv);
-  chatBox.scrollTop = chatBox.scrollHeight;
+function getBotReply(text) {
+  // Simple dummy logic
+  if (text.toLowerCase().includes("hi")) return "Hello there!";
+  if (text.toLowerCase().includes("who are you")) return "I'm your existential crisis with a UI.";
+  return "You said: " + text;
 }
-
-function updateLastBotMessage(newText) {
-  const messages = chatBox.querySelectorAll(".message");
-  const last = messages[messages.length - 1];
-  if (last && last.innerHTML.includes("Bot")) {
-    last.innerHTML = `<strong>Bot:</strong> ${newText}`;
-  }
-}
-
-sendBtn.addEventListener("click", sendMessage);
-userInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") sendMessage();
-});
