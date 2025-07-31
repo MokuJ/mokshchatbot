@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Moksh Chatbot</title>
+  <style>
+    body {
+      background-color: #111;
+      color: #eee;
+      font-family: 'Courier New', monospace;
+      padding: 2rem;
+    }
+    #chat {
+      height: 70vh;
+      overflow-y: auto;
+      border: 1px solid #444;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      background-color: #222;
+    }
+    .msg {
+      margin: 0.5rem 0;
+    }
+    input, button {
+      padding: 0.5rem;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Moksh Chatbot</h1>
+  <div id="chat"></div>
+  <input type="text" id="userInput" placeholder="Type something..." />
+  <button onclick="sendMessage()">Send</button>
+
+  <script src="chat.js"></script>
+</body>
+</html>
