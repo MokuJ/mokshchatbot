@@ -1,29 +1,38 @@
-function sendMessage() {
-  const input = document.getElementById("userInput");
-  const chat = document.getElementById("chat");
-  const userText = input.value.trim();
+const apiKey = "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";
 
-  if (!userText) return;
+document.getElementById("send-btn").addEventListener("click", async () => {
+    const input = document.getElementById("user-input").value;
+    if (!input.trim()) return;
 
-  // Add user message
-  const userMsg = document.createElement("div");
-  userMsg.className = "msg";
-  userMsg.textContent = "You: " + userText;
-  chat.appendChild(userMsg);
+    addMessage("You", input);
+    document.getElementById("user-input").value = "";
 
-  // Fake bot reply
-  const botMsg = document.createElement("div");
-  botMsg.className = "msg";
-  botMsg.textContent = "MokshBot: " + getBotReply(userText);
-  chat.appendChild(botMsg);
+    try {
+        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${apiKey}`
+            },
+            body: JSON.stringify({
+                model: "gpt-3.5-turbo",
+                messages: [{ role: "user", content: input }]
+            })
+        });
 
-  chat.scrollTop = chat.scrollHeight;
-  input.value = "";
-}
+        const data = await response.json();
+        const reply = data.choices?.[0]?.message?.content || "No reply from AI.";
+        addMessage("Bot", reply);
+    } catch (err) {
+        addMessage("Bot", "Error: " + err.message);
+    }
+});
 
-function getBotReply(text) {
-  // Simple dummy logic
-  if (text.toLowerCase().includes("hi")) return "Hello there!";
-  if (text.toLowerCase().includes("who are you")) return "I'm your existential crisis with a UI.";
-  return "You said: " + text;
+function addMessage(sender, text) {
+    const chatBox = document.getElementById("chat-box");
+    const message = document.createElement("div");
+    message.className = "message";
+    message.innerHTML = `<strong>${sender}:</strong> ${text}`;
+    chatBox.appendChild(message);
+    chatBox.scrollTop = chatBox.scrollHeight;
 }
