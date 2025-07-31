@@ -1,5 +1,3 @@
-const apiKey = "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";
-
 async function sendMessage() {
   const input = document.getElementById("userInput");
   const chat = document.getElementById("chat");
@@ -11,16 +9,12 @@ async function sendMessage() {
   chat.scrollTop = chat.scrollHeight;
 
   try {
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    const response = await fetch("/api/chat", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${apiKey}`,
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        model: "gpt-3.5-turbo",
-        messages: [{ role: "user", content: userText }]
-      })
+      body: JSON.stringify({ message: userText }),
     });
 
     const data = await response.json();
@@ -28,7 +22,7 @@ async function sendMessage() {
     if (!response.ok) {
       chat.innerHTML += `<div class="msg"><strong>Bot:</strong> Error: ${data.error.message}</div>`;
     } else {
-      const reply = data.choices?.[0]?.message?.content || "[No response]";
+      const reply = data.reply || "[No response]";
       chat.innerHTML += `<div class="msg"><strong>Bot:</strong> ${reply}</div>`;
     }
 
